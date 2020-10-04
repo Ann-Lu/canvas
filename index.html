@@ -13,10 +13,11 @@
         }
 
         #canvas {
-            /* display: block; */
-            border: 1px solid black;
-            /* width: 100vw; */
-            height: 100vh;
+            /* 因为canvas是和img类似的inline元素，底部有多余，不能占满全屏 */
+            display: block;
+            /* border: 1px solid black; */
+            /* width: 100vw;
+            height: 100vh; */
 
             /* 默认大小300px*150px */
         }
@@ -25,12 +26,11 @@
 </head>
 
 <body>
-    <div id="canvas"></div>
-    <!-- <canvas id="canvas"></canvas> -->
-    <!-- 写成这样就出不了小点 -->
-    <script type="text/javascript">
+    <!-- 用js操作dom很慢，因为他们是跨线程交流 -->
+    <!-- <script type="text/javascript">
+        <div id="canvas"></div>
         // 监听点击事件，获取用户的落点的坐标位置（x,y）
-        canvas.onclick = (e) => {
+        canvas.onmousemove = (e) => {
             console.log(e.clientX)
             console.log(e.clientY)
             // 创建div--鼠标点击出现小点,存在内存中，并不显示
@@ -44,12 +44,65 @@
             div.style.borderRadius = '50%'
             div.style.background = 'black'
             // 生成子元素div,让点显示
-            canvas.appendChild(div)
+            canvas.appendChild(div) 
 
+        </script> -->
 
+    <canvas id="canvas"></canvas>
+    <script type="text/javascript">
+        let canvas = document.getElementById("canvas");
+        //用css定义宽高，图片可能会扭曲,从一开始就获取屏幕的宽高作为canvas的尺寸
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
 
+        let ctx = canvas.getContext("2d");
+
+        let painting = false;
+
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "none";
+
+        //在手机上实现
+        let isTouchDevice = 'ontouchstart' in document.documentElement;
+        if (isTouchDevice) {
+            canvas.ontouchmove = (e) => {
+                //获取第一个手指的在屏幕上的x,y
+                let x = e.touches[0].clientX;
+                let y = e.touches[0].clientY;
+                // console.log(x, y)
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.fill();
+            }
+        } else {
+            canvas.onmousedown = () => {
+                painting = true;
+            }
+
+            canvas.onmousemove = (e) => {
+                if (painting === true) {
+                    // console.log(e.clientX)
+                    // console.log(e.clientY)
+                    // //画矩形点
+                    // ctx.fillStyle = "blue";
+                    // ctx.fillRect(e.clientX - 2, e.clientY - 2, 4, 4);
+                    //画圆形点
+                    ctx.beginPath();
+                    ctx.arc(e.clientX, e.clientY, 4, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.fill();
+                    // } else {
+                    //     console.log("什么都不做")
+                    // }
+                }
+                canvas.onmouseup = (e) => {
+                    painting = false;
+                }
+            }
         }
     </script>
+
 
 </body>
 
