@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas画图板</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            /* display: block; */
+            border: 1px solid black;
+            /* width: 100vw; */
+            height: 100vh;
+
+            /* 默认大小300px*150px */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="canvas"></div>
+    <!-- <canvas id="canvas"></canvas> -->
+    <!-- 写成这样就出不了小点 -->
+    <script type="text/javascript">
+        // 监听点击事件，获取用户的落点的坐标位置（x,y）
+        canvas.onclick = (e) => {
+            console.log(e.clientX)
+            console.log(e.clientY)
+            // 创建div--鼠标点击出现小点,存在内存中，并不显示
+            let div = document.createElement('div')
+            div.style.position = 'absolute'
+            div.style.left = e.clientX - 2 + 'px'
+            div.style.top = e.clientY - 2 + 'px'
+            // div.style.border = '1px solid red'
+            div.style.width = '4px'
+            div.style.height = '4px'
+            div.style.borderRadius = '50%'
+            div.style.background = 'black'
+            // 生成子元素div,让点显示
+            canvas.appendChild(div)
+
+
+
+        }
+    </script>
+
+</body>
+
+</html>
